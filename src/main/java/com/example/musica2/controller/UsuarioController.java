@@ -5,7 +5,7 @@ import com.example.musica2.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,10 +27,6 @@ public class UsuarioController {
         return usuario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public Usuario createUsuario(@RequestBody Usuario usuario) {
-        return usuarioService.save(usuario);
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> updateUsuario(@PathVariable Long id, @RequestBody Usuario usuarioDetails) {
@@ -56,4 +52,12 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/registro/")
+    public ResponseEntity<String> novoRegistro(@Valid @RequestBody Usuario usuario) {
+        Usuario novoUsuario = usuarioService.save(usuario);
+        return ResponseEntity.ok( novoUsuario.getNome() +" registrado com sucesso!");
+    }
 }
+
+
