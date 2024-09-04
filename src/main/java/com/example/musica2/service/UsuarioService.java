@@ -33,6 +33,10 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
+    public Optional<Usuario> findByNome(String nome) {
+        return usuarioRepository.findByNome(nome);
+    }
+
     @Transactional
 public UserDetails findUsuarioByNome(String nome) {
     Optional<Usuario> optionalUsuario = usuarioRepository.findByNome(nome);

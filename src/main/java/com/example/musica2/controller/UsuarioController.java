@@ -1,9 +1,12 @@
 package com.example.musica2.controller;
 
+import com.example.musica2.dto.LoginRequestDTO;
 import com.example.musica2.model.Usuario;
+import com.example.musica2.security.TokenService;
 import com.example.musica2.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -15,6 +18,11 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TokenService tokenService;
 
     @GetMapping
     public List<Usuario> getAllUsuarios() {
@@ -57,6 +65,26 @@ public class UsuarioController {
     public ResponseEntity<String> novoRegistro(@Valid @RequestBody Usuario usuario) {
         Usuario novoUsuario = usuarioService.save(usuario);
         return ResponseEntity.ok( novoUsuario.getNome() +" registrado com sucesso!");
+    }
+
+    @PostMapping("/login/")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest) {
+        Optional<Usuario> usuarioOptional = usuarioService.findByNome(loginRequest.getUsername());
+
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+
+            // Verifica se a senha fornecida corresponde à senha armazenada
+            if (passwordEncoder.matches(loginRequest.getPassword(), usuario.getSenha())) {
+                // Gera o token JWT com uma validade de 24 horas (exemplo)
+                String token = tokenService.generateToken(usuario, 24);
+                return ResponseEntity.ok(token);
+            } else {
+                return ResponseEntity.status(401).body("Senha incorreta");
+            }
+        } else {
+            return ResponseEntity.status(401).body("Usuário não encontrado");
+        }
     }
 }
 

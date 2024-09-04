@@ -21,7 +21,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 public class SecurityConfiguration {
 
     private static final String[] POST_ROLE_ALLPERMIT = {
-//            "/usuarios/login/",
+            "/usuarios/login/",
             "/usuarios/registro/",
     };
 
