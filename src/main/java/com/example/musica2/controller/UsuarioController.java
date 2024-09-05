@@ -78,14 +78,15 @@ public class UsuarioController {
             if (passwordEncoder.matches(loginRequest.getPassword(), usuario.getSenha())) {
                 // Gera o token JWT com uma validade de 24 horas (exemplo)
                 String token = tokenService.generateToken(usuario, 24);
-                return ResponseEntity.ok(token);
+                return ResponseEntity.ok().header("Authorization", "Bearer " + token).body("Login bem-sucedido");
             } else {
-                return ResponseEntity.status(401).body("Senha incorreta");
+                return ResponseEntity.status(400).body("Senha incorreta");
             }
         } else {
-            return ResponseEntity.status(401).body("Usuário não encontrado");
+            return ResponseEntity.status(400).body("Usuário não encontrado");
         }
     }
 }
+
 
 

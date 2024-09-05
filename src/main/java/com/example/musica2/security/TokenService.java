@@ -21,21 +21,21 @@ public class TokenService {
     private String secret;
 
     public String generateToken(Usuario user, Integer expiration) {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+    try {
+        Algorithm algorithm = Algorithm.HMAC256(secret);
 
-            String token = JWT.create()
-                    .withIssuer("PID-api")
-                    .withClaim("usuarioId", user.getId())
-                    .withExpiresAt(this.generateExpirationDate(expiration))
-                    .sign(algorithm);
+        String token = JWT.create()
+                .withIssuer("Musica-api")
+                .withClaim("usuarioId", user.getId())
+                .withExpiresAt(this.generateExpirationDate(expiration))
+                .sign(algorithm);
 
-            return token;
+        return token;
 
-        } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error ao gerar o token ", exception);
-        }
+    } catch (JWTCreationException exception) {
+        throw new RuntimeException("Error ao gerar o token ", exception);
     }
+}
 
     public String validateToken(String token) {
         try {
@@ -60,7 +60,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             Date expirationDate = JWT.require(algorithm)
-                    .withIssuer("PID-api")
+                    .withIssuer("Musica-api")
                     .build()
                     .verify(refreshTokenRequest)
                     .getExpiresAt();
@@ -77,7 +77,7 @@ public class TokenService {
 
         // Decodificar o token
         DecodedJWT jwt = JWT.require(Algorithm.HMAC256(secret))
-                .withIssuer("PID-api")
+                .withIssuer("Musica-api")
                 .build()
                 .verify(token);
 
